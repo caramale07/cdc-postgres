@@ -69,18 +69,31 @@ services:
       ADMINER_DEFAULT_DB_HOST: postgres
       ADMINER_DEFAULT_DB_NAME: postgres
 
-  kowl:
-    image: quay.io/cloudhut/kowl:v1.3.1
-    restart: on-failure
-    container_name: kowl
+  # kowl:
+  #   image: quay.io/cloudhut/kowl:v1.3.1
+  #   restart: on-failure
+  #   container_name: kowl
+  #   ports:
+  #       - "8080:8080"
+  #   depends_on:
+  #       - kafka
+  #   environment:
+  #     KAFKA_BROKERS: "kafka:29092"
+  #     KAFKA_SCHEMAREGISTRY_ENABLED: "true"
+  #     KAFKA_SCHEMAREGISTRY_URLS: "http://schema-registry:8081"
+
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    container_name: redpanda-console
     ports:
-        - "8080:8080"
+      - "8080:8080"
     depends_on:
-        - kafka
+      - kafka
+      - schema-registry
     environment:
       KAFKA_BROKERS: "kafka:29092"
-      KAFKA_SCHEMAREGISTRY_ENABLED: "true"
-      KAFKA_SCHEMAREGISTRY_URLS: "http://schema-registry:8081"
+      SCHEMA_REGISTRY_URLS: "http://schema-registry:8081"
+
 
   kafka-connect-ui:
     image: landoop/kafka-connect-ui:0.9.7
